@@ -25,15 +25,16 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         let post = PFObject(className: "Posts")
             
         post["caption"] = commentField.text
-        post["author"] = PFUser.current()
+        post["author"] = PFUser.current()!
         let imageData = imageView.image!.pngData()
         let file = PFFileObject(data: imageData!)
         
         post["image"] = file
         
         post.saveInBackground { (success, error) in
+            self.dismiss(animated: true, completion: nil )
+
             if success {
-                self.dismiss(animated: true, completion: nil )
                 print("saved!")
             } else {
                 print("error!")
@@ -57,7 +58,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         let image = info[.editedImage] as! UIImage
         
         let size = CGSize(width: 300, height: 300)
-        let scaledImage = image.af_imageScaled(to: size)
+        let scaledImage = image.af_imageAspectScaled(toFill: size)
         
         imageView.image = scaledImage
         
